@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/eetuam1/DiceRoll.git'  // Update the URL to your repository
+                git branch: 'main', url: 'https://github.com/eetuam1/DiceRoll.git'  // Make sure this points to the correct repository
             }
         }
         stage('Build') {
