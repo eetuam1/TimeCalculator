@@ -1,36 +1,39 @@
 pipeline {
     agent any
-
+    tools {
+        maven 'Maven3'  // Ensure Maven is installed
+        jdk 'JDK21'     // Ensure JDK is installed
+    }
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/eetuam1/TimeCalculator.git'
+                git branch: 'main', url: 'https://github.com/eetuam1/DiceRoll.git'  // Update the URL to your repository
             }
         }
-
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                bat 'mvn clean package'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
             }
         }
-
-        stage('Test') {
+        stage('Run Unit Tests') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'  // Capture test reports
+                }
             }
         }
-
-        stage('Code Coverage') {
+        stage('Code Coverage Report') {
             steps {
-                jacoco execPattern: '**/target/jacoco.exec'
+                bat 'mvn jacoco:report'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
             }
-        }
-    }
-
-    post {
-        always {
-            junit '**/target/surefire-reports/*.xml'
-            jacoco execPattern: '**/target/jacoco.exec'
+            post {
+                always {
+                    jacoco execPattern: 'target/jacoco.exec'  // Capture JaCoCo coverage
+                }
+            }
         }
     }
 }
